@@ -37,6 +37,24 @@ const userSchema = new mongoose.Schema(
 
 );
 
+userSchema.pre("save", async (next) => {
+
+    if (!this.isModified("password")){
+        return next();
+    }
+
+    // assume the password has been modified from here onwards
+
+    if (!this.salt){
+        this.salt = crypto.randomBytes(64).toString("hex");
+    }
+
+    this.password = crypto.scryptSync(this.password, this.salt, 64).toString("hex");
+
+    next();
+
+});
+
 // make model using the schema
 
 const User = mongoose.model("User", userSchema);
