@@ -5,6 +5,8 @@ const { default: mongoose, models } = require("mongoose");
 // make an instance of an express server
 const app = express();
 
+app.use(express.json());
+
 // configure the server instance with its routes and other middleware and so on
 app.get("/", (request, response) => {
     response.json({
@@ -27,6 +29,9 @@ app.get("/databaseHealth", (request, response) => {
     host: databaseHost
     })
 })
+
+const UserRouter = require("./controllers/UserController");
+app.use("/users", UserRouter);
 
 module.exports = {
     app
